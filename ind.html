@@ -3,41 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>My todolist</title>
 </head>
 <div id="todoParent">
     <h1>Todo List</h1>
-        <div id ="todoParent">
-        <div id="todo-1" style= "display : flex ; align-items : center ;">
-            <h2>Todo1</h2>
         </div>
-        
-        <div id="todo-2" style= "display : flex ; align-items : center ;">
-            <h2>Todo2</h2> 
-        </div>
-
-        <div id="todo-3" style= "display : flex ; align-items : center ;" >
-            <h2>Todo3</h2>
-        </div>  
-       
-        </div>
-    </div>
-    <div id="input-section"> <input type="text" placeholder="Write down your task here"></input>
-    <button onclick = "addTodo()">Add Task</button>
-    <button onclick="deleteTodo()">Delete</button>
-    <button onclick ="editTodo()">Edit</button>
-    </div> 
+</div>
+<div id="input-section"> 
+    <input type="text" placeholder="Write down your task here"></input>
+    <button onclick = "addTodo()">Add Task</button> 
+</div> 
     <script>
-        function deleteTodo(){
-            const elem = document.querySelector("h2");
-            elem.parentNode.removeChild(elem)
-        }
+        // Adding a new todo item to the list
+        let ctr = 1;
         function addTodo(){
             const task = document.querySelector("#input-section input").value;
             const newtodo = document.createElement("div");
-            newtodo.innerHTML = `<h2>${task}</h2>`;
+            newtodo.setAttribute("id","todo-"+ ctr); // settng the ids for the todos so that we can find that easily whenever it is required to delete
+            ctr = ctr + 1; // increasing the counter for next todo
+            newtodo.innerHTML = `<h2>${task}</h2><button onclick = "deleteTodo(${ctr-1})">Delete</button>`;
                 const parentElem = document.getElementById("todoParent")
                 parentElem.appendChild(newtodo);
+        }
+        // Deleting an exisiting todo item from the list
+        function deleteTodo(ind){
+            const elem = document.getElementById("todo-"+ind);
+            elem.parentNode.removeChild(elem);
         }
     </script>
 </body>
