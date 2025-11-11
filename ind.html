@@ -3,32 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My todolist</title>
+    <title>Document</title>
 </head>
-<div id="todoParent">
-    <h1>Todo List</h1>
-        </div>
-</div>
-<div id="input-section"> 
-    <input type="text" placeholder="Write down your task here"></input>
-    <button onclick = "addTodo()">Add Task</button> 
-</div> 
+<body>
+    <h1>Todo's For Today</h1>
+    <div id="todo-parent">
+
+    </div>
+    <div id="input-section">
+        <input type = "text" id="input-bar" placeholder = "write your task"></input>
+        <button id="addTask" onclick="addTodo()">Add</button>
+    </div>
     <script>
-        // Adding a new todo item to the list
-        let ctr = 1;
+        // Adding a new todo item to the list 
         function addTodo(){
-            const task = document.querySelector("#input-section input").value;
+            const task = document.querySelector("#input-bar").value;
             const newtodo = document.createElement("div");
-            newtodo.setAttribute("id","todo-"+ ctr); // settng the ids for the todos so that we can find that easily whenever it is required to delete
-            ctr = ctr + 1; // increasing the counter for next todo
-            newtodo.innerHTML = `<h2>${task}</h2><button onclick = "deleteTodo(${ctr-1})">Delete</button>`;
-                const parentElem = document.getElementById("todoParent")
-                parentElem.appendChild(newtodo);
+            let cnt = 1;
+            newtodo.setAttribute("id","todo-" + cnt);
+            newtodo.innerHTML = `<h2>${task}</h2><button onclick ="deleteTodo(${cnt})">Delete</button><button onclick="editTodo(${cnt})">Edit</button>`;
+            cnt = cnt + 1;
+            const parent = document.getElementById("todo-parent");
+            parent.appendChild(newtodo);
         }
-        // Deleting an exisiting todo item from the list
-        function deleteTodo(ind){
-            const elem = document.getElementById("todo-"+ind);
-            elem.parentNode.removeChild(elem);
+        // Deleting an existing todo item from the list 
+        function deleteTodo(index){
+            const todo = document.getElementById("todo-"+index);
+            todo.parentNode.removeChild(todo);
+        }
+        // Editing an existing todo item from the list
+        function editTodo(index){
+            const newTask = prompt("Enter your new task","Write something");
+            document.getElementById("todo-"+index).innerHTML = `<h2>${newTask}</h2><button onclick ="deleteTodo(${index})">Delete</button><button onclick="editTodo(${index})">Edit</button>`;
         }
     </script>
 </body>
