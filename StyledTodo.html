@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Todo List</title>
+    <style>
+        /* Import a clean font */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        /* Basic setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Main app container */
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Title */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* Input section */
+        #input-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #input-bar {
+            flex-grow: 1; /* Takes up remaining space */
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        #input-bar:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* General button styling */
+        button {
+            padding: 12px 15px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Add Task button */
+        #addTask {
+            background-color: #667eea;
+            color: white;
+        }
+
+        #addTask:hover {
+            background-color: #5a6fdc;
+        }
+
+        /* Parent for all todo items */
+        #todo-parent {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Individual todo item */
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .todo-item h2 {
+            font-size: 18px;
+            font-weight: 500;
+            color: #333;
+            /* Prevents long text from overflowing */
+            word-break: break-all;
+            margin-right: 15px;
+        }
+
+        /* Container for the buttons inside the todo item */
+        .todo-item .buttons {
+            display: flex;
+            gap: 8px;
+            /* Prevents buttons from wrapping */
+            flex-shrink: 0;
+        }
+
+        /* Edit/Delete buttons */
+        .edit-btn, .delete-btn {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .edit-btn {
+            background-color: #f39c12; /* Orange */
+        }
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c; /* Red */
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Todo's For Today</h1>
+        <div id="todo-parent">
+            </div>
+
+        <div id="input-section">
+            <input type="text" id="input-bar" placeholder="Write your task">
+            <button id="addTask" onclick="addTodo()">Add</button>
+        </div>
+    </div>
+
+    <script>
+        // CRITICAL FIX: 'cnt' must be global so it increments correctly
+        let cnt = 1; 
+
+        // Adding a new todo item to the list 
+        function addTodo(){
+            const task = document.querySelector("#input-bar").value;
+
+            // Enhancement: Check for empty task
+            if (task.trim() === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            const newtodo = document.createElement("div");
+            newtodo.setAttribute("id", "todo-" + cnt);
+            newtodo.setAttribute("class", "todo-item"); // Added class for styling
+
+            // Added classes to buttons and a wrapper div for layout
+            newtodo.innerHTML = `
+                <h2>${task}</h2>
+                <div class="buttons">
+                    <button class="delete-btn" onclick="deleteTodo(${cnt})">Delete</button>
+                    <button class="edit-btn" onclick="editTodo(${cnt})">Edit</button>
+                </div>`;
+            
+            const parent = document.getElementById("todo-parent");
+            parent.appendChild(newtodo);
+
+            // Increment the global counter
+            cnt = cnt + 1; 
+
+            // Enhancement: Clear the input bar after adding
+            document.querySelector("#input-bar").value = "";
+        }
+
+        // Deleting an existing todo item from the list 
+        function deleteTodo(index){
+            const todo = document.getElementById("todo-" + index);
+            todo.parentNode.removeChild(todo);
+        }
+
+        // Editing an existing todo item from the list
+        function editTodo(index){
+            const todoItem = document.getElementById("todo-" + index);
+            const currentTask = todoItem.querySelector("h2").innerText;
+
+            // Enhancement: Pre-fill the prompt with the current task
+            const newTask = prompt("Enter your new task", currentTask);
+
+            // Enhancement: Check if the user clicked "Cancel" or left it empty
+            if (newTask === null || newTask.trim() === "") {
+                return; // Do nothing if canceled or empty
+            }
+
+            // Re-build the HTML just like your original function
+            todoItem.innerHTML = `
+                <h2>${newTask}</h2>
+                <div class="buttons">
+                    <button class="delete-btn" onclick="deleteTodo(${index})">Delete</button>
+                    <button class="edit-btn" onclick="editTodo(${index})">Edit</button>
+                </div>`;
+        }
+    </script>
+</body>
+</html>
