@@ -1,0 +1,83 @@
+<!-- code up the state derived frontend on your own (todo app) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Todos for the day</h1>
+    <div id="todos-parent"></div>
+    <div id="input-section">
+        <input type="text" placeholder="write your task here"></input>
+        <button id="addTask" onclick = "addTodo()">AddTodo</button>
+    </div>
+    <script>
+        // State (source of truth)
+        let todos = [];
+
+        // Add a todo: use explicit input id and validate/trim
+        function addTodo(){
+            todos.push({
+                title : document.querySelector("input").value
+            })
+            render();
+        }
+
+        // Delete a specific todo by index
+        function deleteTodo(index){
+            todos.splice(index, 1);
+            render();
+        }
+
+        // Edit a todo in-place via a prompt (simple approach). Alternatives: inline input or modal.
+        function editTodo(index){
+            // guard: ensure the item exists
+            if (!todos[index]) return;
+            const currTask = todos[index].title || "";
+            // prompt can return null if user cancels — check BEFORE calling trim()
+            const raw = prompt("Edit task:", currTask);
+            if (raw === null) return; // user cancelled
+            const newTask = raw.trim();
+            if (newTask === ""){
+                alert("Task cannot be empty");
+                return;
+            }
+            todos[index].title = newTask;
+            render();
+        }
+
+        // Create DOM node for a single todo. Handlers are assigned as functions to avoid string parsing.
+        function createTodoComponent(todo, index){
+             const div = document.createElement("div");
+             const h1 = document.createElement("h1");
+             const btn = document.createElement("button");
+             const edit = document.createElement("button");
+             edit.innerHTML = "Edit";
+             btn.innerHTML = "Delete";
+            // Use the single todo object's title. `todos` is the array and has no `title` property,
+            // so using `todos.title` produced `undefined`.
+             h1.innerHTML = todo.title;
+             div.append(h1);
+             div.append(btn);
+             div.append(edit);
+             div.setAttribute("id","todo-"+index);
+            // Wire the delete action to the button, not the entire div. Using the button
+            // prevents accidental deletion when clicking elsewhere on the todo item.
+             btn.setAttribute("onclick", `deleteTodo(${index})`);
+             edit.setAttribute("onclick",`editTodo(${index})`)
+            return div;
+        }
+
+        // Render the entire todos array into the DOM (state-derived rendering)
+        function render(){
+            document.querySelector("#todos-parent").innerHTML = "";
+                for(let i = 0 ; i < todos.length ; i++){
+                const elem = createTodoComponent(todos[i],i)
+                document.querySelector("#todos-parent").appendChild(elem);
+                }
+        }
+    </script>
+</body>
+</html>
